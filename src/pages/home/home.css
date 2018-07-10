@@ -1,0 +1,16 @@
+.carousel {
+    height: 60vh;
+}  
+
+.carousel-legend {
+	position: absolute;
+	font-size: 3em;
+	top: 45vh;
+	left: 35px;
+	color: white;
+	text-align: left;
+	background-color: rgba(0,0,0,0.4);
+	padding: 10px !important;
+	border-radius: 5px;
+	width: auto;
+}

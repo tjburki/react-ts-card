@@ -1,0 +1,15 @@
+.c-body {
+    top: 6vw;
+    height: 88vh;
+    margin-top: -12vh;
+    margin-top: 12vh;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media(max-width: 800px) {
+    overflow-y: scroll;
+    
+}
