@@ -1,7 +1,0 @@
-@media(max-width: 1000px) {
-    .c-basket-subheader {
-        display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-    }
-}
