@@ -1,14 +1,45 @@
 import * as React from "react";
 import { Component } from "react";
 import './App.css';
-import Card from "./components/card";
+import { Deck } from "./components/card";
 
 export default class App extends Component {
   public render() {
     return (
       <div>
-        <Card title="Test" front="Hey" back="Ho" margin={15} />
-        <Card title="Test2" front="Here" back="We Go" isFlipped={true} margin={15} />
+        <Deck
+          lgColumns={5}
+          mdColumns={3}
+          smColumns={2}
+          cards={[
+            {
+              title: 'Test',
+              front: 'Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf ',
+              back: 'Ho'
+            },
+            {
+              title: 'Test2',
+              front: 'Here',
+              back: 'We Go',
+              isFlipped: true
+            },
+            {
+              title: 'Test3',
+              front: 'Here',
+              back: 'We Go Again'
+            },
+            {
+              title: 'Test4',
+              front: 'WOW',
+              back: 'So Cool!'
+            },
+            {
+              title: 'Test5',
+              front: 'NewLine!fasfdasdfasdffffffff',
+              back: 'So Cool!'
+            }
+          ]}
+        />
       </div>
     );
   }
