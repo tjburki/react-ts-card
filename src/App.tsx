@@ -12,31 +12,38 @@ export default class App extends Component {
           lgColumns={4}
           mdColumns={3}
           smColumns={2}
-          secondaryColor='purple'
-          contentTextColor='white'
+          primaryColor='#c5050c'
+          secondaryColor='white'
+          contentTextColor='black'
+          titleXAlignment='center'
           cards={[
             {
+              titleXAlignment: 'right',
+              titleBack: 'Hey there what is going on broski nice to see you!',
               front: 'Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf ',
               back: 'Ho'
             },
             {
-              title: 'Test2',
-              titleFront: 'Hello',
-              titleBack: 'There',
-              front: <div style={{backgroundColor: 'orange'}}>Hello there</div>,
-              back: <div style={{backgroundColor: 'orange'}}>Hello there</div>,
-              isFlipped: true,
-              primaryColor: 'red'
+              title: 'Right Aligned',
+              titleXAlignment: 'right',
+              front: <a href="#">Will Not Flip On Link Click</a>,
+              back: <div style={{fontStyle: "italic"}}>See, you didn't see me when you clicked the link</div>
             },
             {
-              title: 'Test3',
-              front: 'Here',
-              back: 'We Go Again'
+              title: 'Center Aligned',
+              titleXAlignment: 'center',
+              allowFlipOnAnchor: true,
+              front: <a href="#">Will Flip On Link Click</a>,
+              back: 'Clicked the link, perhaps?'
             },
             {
-              title: 'Test4',
-              front: 'WOW',
-              back: 'So Cool!'
+              title: 'Vertical-ness',
+              front: 'Right in the center',
+              back: 'Started from the bottom',
+              frontXAlignment: 'center',
+              frontYAlignment: 'center',
+              backXAlignment: 'center',
+              backYAlignment: 'bottom'
             },
             {
               title: 'Test5',

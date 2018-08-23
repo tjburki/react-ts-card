@@ -3,16 +3,16 @@ import * as React from "react";
 import { Component } from "react";
 
 /* Shared Constants */
+//Box-sizing-related shared styles
+const _sharedStyleBoxSizing: React.CSSProperties = {
+  boxSizing: 'border-box'
+};
+
 //Flex-related shared styles
 const _sharedStyleFlex: React.CSSProperties = {
   display: 'flex',
   msFlex: 'flex',
   WebkitFlex: 'flex'
-};
-
-//Box-sizing-related shared styles
-const _sharedStyleBoxSizing: React.CSSProperties = {
-  boxSizing: 'border-box'
 };
 
 /* Shared Interfaces */
@@ -133,14 +133,18 @@ export class Deck extends Component<IDeckProps> {
 
     return (
       <div style={_style.container}>
-        { cards.map((c, i) => <Card key={c.id || i} //Use Id or index in array for key
-          { //Pass the rest of the props
-            ...{
-              ...this.props,  //Pass in all properties, which includes all properties available to Cards
-              ...c            //Individual card properties passed in that can overwrite Deck defaults
-            }
-          } 
-        /> ) }
+        { 
+          cards.map((c, i) => 
+            <Card key={c.id || i} //Use Id or index in array for key
+              {
+                ...{
+                  ...this.props,  //Pass in all properties, which includes all properties available to Cards
+                  ...c            //Individual card properties passed in that can overwrite Deck defaults
+                }
+              } 
+            /> 
+          ) 
+        }
       </div>
     );
   }
@@ -180,6 +184,74 @@ export class Card extends Component<ICardProps, ICardState> {
     windowSize: window.innerWidth     //Initialize to current window size
   };
 
+   /* Handlers */
+  //Flip the card if allowed, call any user-defined behavior
+  _onClick = (e: any) => {
+    const { onClick, isFlippable, allowFlipOnAnchor } = this.props;
+
+    //Flip the card if allowed
+    //Card must be flippable and the click target must not be an anchor or has the option to allow for anchor flips
+    if (isFlippable && (allowFlipOnAnchor || e.target.tagName.toLowerCase() !== "a")) this.setState({ flipped: !this.state.flipped });
+
+    //If the user passed on onClick handler, call it
+    if(onClick) onClick();
+  }
+
+  /* Calculate Columns */
+  //Determine how many columns we want to show at each threshold, default is 1
+  //Use the largest defined value we can find at each window size
+  _xsColumns = this.props.xsColumns || 1;
+  _smColumns = this.props.smColumns || this._xsColumns;
+  _mdColumns = this.props.mdColumns || this._smColumns;
+  _lgColumns = this.props.lgColumns || this._mdColumns;
+  _xlColumns = this.props.xlColumns || this._lgColumns;
+
+  /* Lifecycle */
+  //Add a listener that updates the window size in the card's state on resize
+  componentDidMount() {
+    window.addEventListener('resize', this._updateWidowSize);
+  }
+ 
+  //Remove the window resize listener on unload
+  componentWillUnmount() {
+      window.removeEventListener('resize', this._updateWidowSize);
+  }
+
+  /* Helpers */
+  //Get the alignment CSS styles based on user-defined horizontal values
+  _getXJustification = (justification: 'left' | 'center' | 'right') => //TODO: Needs to be expanded/modified to handle different flex-directions
+    justification === 'center'
+      ? 'center'
+      : justification === 'right'
+        ? 'flex-end'
+        : 'flex-start';
+
+  //Get the alignment CSS styles based on user-defined vertical values
+  _getYAlignment = (alignment: 'top' | 'center' | 'bottom') =>  //TODO: Needs to be expanded/modified to handle different flex-directions
+    alignment === 'center'
+      ? 'center'
+      : alignment === 'bottom'
+        ? 'flex-end'
+        : 'flex-start';
+
+  //Switch the hovered state of the card to its opposite
+  _switchHover = () => this.setState({isHovered: !this.state.isHovered});
+
+  //Set the window size in the card's state so we can resize if necessary
+  _updateWidowSize = () => this.setState({windowSize: window.innerWidth});
+
+  //Get the number of columns the user wants based on the current window size
+  _getNumberOfColumns = () => 
+    Math.abs(this.state.windowSize >= (this.props.xlSize || 1200)
+      ? this._xlColumns
+      : this.state.windowSize >= (this.props.lgSize || 1000)
+        ? this._lgColumns
+        : this.state.windowSize >= (this.props.lgSize || 800)
+          ? this._mdColumns
+          : this.state.windowSize >= (this.props.lgSize || 600)
+            ? this._smColumns
+            : this._xsColumns);
+
   /* Styles */
   _sharedStyleFrontBack: React.CSSProperties = {
     ..._sharedStyleFlex,
@@ -193,7 +265,7 @@ export class Card extends Component<ICardProps, ICardState> {
   _style: ICardStyles = {
     container: {
       ..._sharedStyleBoxSizing,
-      padding: this.props.margin,
+      padding: this.props.margin, //Oh-ho! What a dangerous game I play with your emotions...
       perspective: 1000,   
       width: this.props.width,
     },
@@ -216,20 +288,23 @@ export class Card extends Component<ICardProps, ICardState> {
       transform: 'rotateY(-180deg)'
     },
     cardHovered: {
-      boxShadow: '0px 10px 18px 3px',
+      boxShadow: '0px 10px 36px 5px',
       color: this.props.primaryColor
     },
     title: {
       ..._sharedStyleBoxSizing,
+      ..._sharedStyleFlex,
+      alignItems: this._getYAlignment(this.props.titleYAlignment || 'top'),
       color: this.props.titleTextColor,
       fontSize: '1.5em',
+      justifyContent: this._getXJustification(this.props.titleXAlignment || 'left'),
       padding: 10,
       width: '100%'
     },
     front: {
+      ..._sharedStyleFlex,
       ...this._sharedStyleFrontBack,
-      transform: 'rotateY(0deg)',
-      
+      transform: 'rotateY(0deg)'
     },
     back: {
       ...this._sharedStyleFrontBack,
@@ -237,6 +312,7 @@ export class Card extends Component<ICardProps, ICardState> {
     },
     content: {
       ..._sharedStyleBoxSizing,
+      ..._sharedStyleFlex,
       backgroundColor: this.props.secondaryColor,
       color: this.props.contentTextColor,
       flex: 1,
@@ -247,58 +323,6 @@ export class Card extends Component<ICardProps, ICardState> {
       width: '100%'
     }
   };
-
-  /* Handlers */
-  //Flip the card if allowed, call any user-defined behavior
-  _onClick = (e: any) => {
-    const { onClick, isFlippable, allowFlipOnAnchor } = this.props;
-
-    //Flip the card if allowed
-    //Card must be flippable and the click target must not be an anchor or has the option to allow for anchor flips
-    if (isFlippable && (allowFlipOnAnchor || e.target.tagName !== "a")) this.setState({ flipped: !this.state.flipped });
-
-    //If the user passed on onClick handler, call it
-    if(onClick) onClick();
-  }
-
-  /* Calculate Columns */
-  //Determine how many columns we want to show at each threshold, default is 1
-  //Use the largest defined value we can find at each window size
-  _xsColumns = this.props.xsColumns || 1;
-  _smColumns = this.props.smColumns || this._xsColumns;
-  _mdColumns = this.props.mdColumns || this._smColumns;
-  _lgColumns = this.props.lgColumns || this._mdColumns;
-  _xlColumns = this.props.xlColumns || this._lgColumns;
-
-  /* Helpers */
-  //Switch the hovered state of the card to its opposite
-  _switchHover = () => this.setState({isHovered: !this.state.isHovered});
-
-  //Set the window size in the card's state so we can resize if necessary
-  _updateWidowSize = () => this.setState({windowSize: window.innerWidth});
-
-  //Get the number of columns the user wants based on the current window size
-  _getNumberOfColumns = () => 
-    Math.abs(this.state.windowSize >= (this.props.xlSize || 1200)
-      ? this._xlColumns
-      : this.state.windowSize >= (this.props.lgSize || 1000)
-        ? this._lgColumns
-        : this.state.windowSize >= (this.props.lgSize || 800)
-          ? this._mdColumns
-          : this.state.windowSize >= (this.props.lgSize || 600)
-            ? this._smColumns
-            : this._xsColumns);
-
-  /* Lifecycle */
-  //Add a listener that updates the window size in the card's state on resize
-  componentDidMount() {
-    window.addEventListener('resize', this._updateWidowSize);
-  }
- 
-  //Remove the window resize listener on unload
-  componentWillUnmount() {
-      window.removeEventListener('resize', this._updateWidowSize);
-  }
 
   /* Render */
   render() {
@@ -330,7 +354,7 @@ export class Card extends Component<ICardProps, ICardState> {
         }}>
           <div style={_style.front}>
             { 
-              title 
+              titleFront || title 
                 ? <div style={_style.title}>
                     {
                       titleFront || title
@@ -338,20 +362,36 @@ export class Card extends Component<ICardProps, ICardState> {
                   </div> 
                 : null 
             }
-            <div style={_style.content}>
+            <div style=
+              {
+                {
+                  ..._style.content,
+                  alignItems:  this._getYAlignment(this.props.frontYAlignment || 'top'),
+                  justifyContent: this._getXJustification(this.props.frontXAlignment || 'left')
+                }
+              }
+            >
               <div>{front}</div>
             </div>
           </div>
           <div style={_style.back}>
             { 
-              title 
+              titleBack || title 
                 ? <div style={_style.title}>
                     {
                       titleBack || title
                     }
                   </div> 
                 : null }
-            <div style={_style.content}>
+            <div style=
+              {
+                {
+                  ..._style.content,
+                  alignItems:  this._getYAlignment(this.props.backYAlignment || 'top'),
+                  justifyContent: this._getXJustification(this.props.backXAlignment || 'left')
+                }
+              }
+            >
               <div>{back}</div>
             </div>
           </div>
