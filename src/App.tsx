@@ -24,8 +24,10 @@ export default class App extends Component {
               back: 'Ho'
             },
             {
-              title: 'Right Aligned',
-              titleXAlignment: 'right',
+              titleFront: 'Left Aligned',
+              titleBack: 'Right Aligned',
+              titleFrontXAlignment: 'left',
+              titleBackXAlignment: 'right',
               front: <a href="#">Will Not Flip On Link Click</a>,
               back: <div style={{fontStyle: "italic"}}>See, you didn't see me when you clicked the link</div>
             },

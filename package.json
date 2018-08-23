@@ -1,6 +1,6 @@
 {
   "name": "react-ts-card",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": false,
   "dependencies": {
     "react": "^16.3.2",

@@ -329,8 +329,7 @@ export class Card extends Component<ICardProps, ICardState> {
       flex: 1,
       fontSize: '1.2em',
       overflowY: 'auto',
-      padding: 15,  
-      textAlign: 'center',
+      padding: 15,
       width: '100%'
     }
   };
@@ -348,6 +347,7 @@ export class Card extends Component<ICardProps, ICardState> {
     } = this;
 
     const { 
+      title,
       titleFront, 
       titleBack, 
       front,
@@ -402,7 +402,7 @@ export class Card extends Component<ICardProps, ICardState> {
         >
           <div style={_style.front}>
             { 
-              titleFront
+              titleFront || title
                 ? <div 
                     style=
                     {
@@ -414,7 +414,7 @@ export class Card extends Component<ICardProps, ICardState> {
                     }
                   >
                     {
-                      titleFront
+                      titleFront || title
                     }
                   </div> 
                 : null 
@@ -433,7 +433,7 @@ export class Card extends Component<ICardProps, ICardState> {
           </div>
           <div style={_style.back}>
             { 
-              titleBack
+              titleBack || title
                 ? <div style=
                     {
                       {
@@ -444,7 +444,7 @@ export class Card extends Component<ICardProps, ICardState> {
                     }
                   >
                     {
-                      titleBack
+                      titleBack || title
                     }
                   </div> 
                 : null }
