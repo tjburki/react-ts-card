@@ -4,19 +4,21 @@ import { Component } from "react";
 
 //Shared Interfaces
 interface IColumnLayout {
+  xlColumns?: number,
   lgColumns?: number,
   mdColumns?: number,
   smColumns?: number,
   xsColumns?: number,
-  lgSize?: number | string,
-  mdSize?: number | string,
-  smSize?: number | string,
-  xsSize?: number | string
+  xlSize?: number,
+  lgSize?: number,
+  mdSize?: number,
+  smSize?: number,
+  xsSize?: number
 }
 
 //Component Interfaces
-interface IDeckProps extends IColumnLayout {
-  cards: ICardProps[],
+interface IDeckProps extends ICardProps {
+  cards: ICardProps[]
 }
 
 interface ICardProps extends IColumnLayout {
@@ -110,15 +112,15 @@ export class Deck extends Component<IDeckProps> {
     //Destructure objects
     const { _style } = this;
     const { cards } = this.props;
+    const cardProps = this.props as ICardProps; //TODO: This includes all props so fix it
 
     return (
       <div style={_style.container}>
-        { cards.map((c, i) => <Card key={c.id || i} id={i}
-          {
+        { cards.map((c, i) => <Card key={c.id || i}
+          { //Pass the rest of the props
             ...{
-              ...c, 
-              margin: 15,
-              ...this.props as IColumnLayout
+              ...cardProps, //Card properties passed in to Deck as defaults
+              ...c //Individual card properties passed in that can overwrite Deck defaults
             }
           } 
         /> ) }
@@ -139,7 +141,8 @@ export class Card extends Component<ICardProps, ICardState> {
     primaryColor: 'black',
     secondaryColor: 'white',
     titleTextColor: 'white',
-    contentTextColor: 'black'
+    contentTextColor: 'black',
+    margin: 15
   };
 
   //Initialize State
@@ -150,6 +153,10 @@ export class Card extends Component<ICardProps, ICardState> {
   };
 
   //Styles
+  _sharedStyleBoxSizing: React.CSSProperties = {
+    boxSizing: 'border-box'
+  }
+
   _sharedStyleFrontBack: React.CSSProperties = {
     backfaceVisibility: 'hidden', 
     position: 'absolute',
@@ -163,12 +170,11 @@ export class Card extends Component<ICardProps, ICardState> {
     container: {
       perspective: 1000,
       padding: this.props.margin,
-      boxSizing: 'border-box',
-      width: this.props.width
+      width: this.props.width,
+      ...this._sharedStyleBoxSizing
     },
     card: {
       width: '100%',
-      minWidth: '100px',
       height: this.props.height,
       borderRadius: 5,
       border: '5px solid',
@@ -180,7 +186,7 @@ export class Card extends Component<ICardProps, ICardState> {
       position: 'relative',
       backgroundColor: this.props.primaryColor,
       borderColor: this.props.primaryColor,
-      boxSizing: 'border-box'
+      ...this._sharedStyleBoxSizing
     },
     cardFlipped: {
       transform: 'rotateY(-180deg)'
@@ -191,7 +197,6 @@ export class Card extends Component<ICardProps, ICardState> {
     },
     front: {
       ...this._sharedStyleFrontBack,
-      zIndex: 2,
       transform: 'rotateY(0deg)'
     },
     back: {
@@ -199,19 +204,22 @@ export class Card extends Component<ICardProps, ICardState> {
       transform: 'rotateY(180deg)'
     },
     title: {
-      padding: 5,
+      padding: 10,
       width: '100%',
       fontSize: '1.5em',
-      color: this.props.titleTextColor
+      color: this.props.titleTextColor,
+      ...this._sharedStyleBoxSizing
     },
     content: {
       padding: 15,
+      width: '100%',
       fontSize: '1.2em',
       textAlign: 'center',
+      flex: 1,
+      overflowY: 'auto',
       color: this.props.contentTextColor,
       backgroundColor: this.props.secondaryColor,
-      flex: 1,
-      overflowY: 'auto'
+      ...this._sharedStyleBoxSizing
     }
   };
 
@@ -227,25 +235,26 @@ export class Card extends Component<ICardProps, ICardState> {
     if(onClick) onClick();
   }
 
-  //Helpers
-  _switchHover = () => this.setState({isHovered: !this.state.isHovered});
-
   //Calculate Columns
   _xsColumns = this.props.xsColumns || 1;
   _smColumns = this.props.smColumns || this._xsColumns;
   _mdColumns = this.props.mdColumns || this._smColumns;
   _lgColumns = this.props.lgColumns || this._mdColumns;
+  _xlColumns = this.props.xlColumns || this._lgColumns;
 
   //Helpers
+  _switchHover = () => this.setState({isHovered: !this.state.isHovered});
   _updateWidowSize = () => this.setState({windowSize: window.innerWidth});
   _getNumberOfColumns = () => 
-    this.state.windowSize >= 1000
-      ? this._lgColumns
-      : this.state.windowSize >= 800
-        ? this._mdColumns
-        : this.state.windowSize >= 600
-          ? this._smColumns
-          : this._xsColumns;
+    this.state.windowSize >= (this.props.xlSize || 1200)
+      ? this._xlColumns
+      : this.state.windowSize >= (this.props.lgSize || 1000)
+        ? this._lgColumns
+        : this.state.windowSize >= (this.props.lgSize || 800)
+          ? this._mdColumns
+          : this.state.windowSize >= (this.props.lgSize || 600)
+            ? this._smColumns
+            : this._xsColumns;
 
   //Lifecycle
   componentDidMount() {
@@ -262,9 +271,7 @@ export class Card extends Component<ICardProps, ICardState> {
     const { _style, _onClick, _switchHover, _getNumberOfColumns } = this;
     const { title, front, back, style, width } = this.props;
     const { flipped, isHovered } = this.state;
-    const numOfColumns = _getNumberOfColumns();
-    const containerWidth = width || `${100 /  numOfColumns}%`;
-    console.log(this.props.id, numOfColumns, this.state.windowSize);
+    const containerWidth = width || `${100 /  _getNumberOfColumns()}%`; //Split the cards into columns
 
     return (
       <div

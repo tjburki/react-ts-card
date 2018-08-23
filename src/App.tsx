@@ -19,8 +19,8 @@ export default class App extends Component {
             },
             {
               title: 'Test2',
-              front: 'Here',
-              back: 'We Go',
+              front: <div style={{backgroundColor: 'orange'}}>Hello there</div>,
+              back: <div style={{backgroundColor: 'orange'}}>Hello there</div>,
               isFlipped: true
             },
             {
