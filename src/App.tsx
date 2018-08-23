@@ -40,10 +40,10 @@ export default class App extends Component {
               title: 'Vertical-ness',
               front: 'Right in the center',
               back: 'Started from the bottom',
-              frontXAlignment: 'center',
-              frontYAlignment: 'center',
-              backXAlignment: 'center',
-              backYAlignment: 'bottom'
+              contentFrontXAlignment: 'center',
+              contentFrontYAlignment: 'center',
+              contentBackXAlignment: 'center',
+              contentBackYAlignment: 'bottom'
             },
             {
               title: 'Test5',

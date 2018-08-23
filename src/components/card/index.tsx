@@ -15,27 +15,16 @@ const _sharedStyleFlex: React.CSSProperties = {
   WebkitFlex: 'flex'
 };
 
-/* Shared Interfaces */
-//Common properties of column-type layouts
-interface IColumnLayout {
-  xlColumns?: number, //# of columns at xlSize screen width (px)
-  lgColumns?: number, //# cols @ lgSize
-  mdColumns?: number, //# cols @ mdSize
-  smColumns?: number, //# cols @ smSize
-  xsColumns?: number, //# cols @ xsSize
-  xlSize?: number,    //Minimum window size (px) for # xlColumns
-  lgSize?: number,    //Size for lgColumns
-  mdSize?: number,    //Size for mdColumns
-  smSize?: number,    //Size for smColumns
-  xsSize?: number     //Size for xsColumns
-}
+/* Shared Types */
+type xAlignment = 'left' | 'center' | 'right';
+type yAlignment = 'top' | 'center' | 'bottom';
 
 /* Property Interfaces */
 interface IDeckProps extends ICardProps {
   cards: ICardProps[]   //List of cards we want to show in the Deck
 }
 
-interface ICardProps extends IColumnLayout {
+interface ICardProps {
   //Id/Key
   id?: any;                     //User-supplied Id for card, will be used as key for iteration (otherwise index)
 
@@ -67,12 +56,30 @@ interface ICardProps extends IColumnLayout {
   back?: any;                   //What appears on the back of the card, can be text or JSX/TSX
 
   //Title & Content Alignment                         
-  titleXAlignment?: 'left' | 'center' | 'right';      //How the title should be aligned horizontally, default left
-  titleYAlignment?: 'top' | 'center' | 'bottom';      //How the title should be aligned vertically, default top
-  frontXAlignment?: 'left' | 'center' | 'right';      //How the front content should be aligned horizontally, default left
-  frontYAlignment?: 'top' | 'center' | 'bottom';      //How the front content should be aligned vertically, default top
-  backXAlignment?: 'left' | 'center' | 'right';       //How the back content should be aligned horizontally, default left
-  backYAlignment?: 'top' | 'center' | 'bottom';       //How the back content should be aligned vertically, default top
+  titleXAlignment?: xAlignment;         //How the title should be aligned horizontally (overriden by side-specific), default left
+  titleYAlignment?: yAlignment;         //How the title should be aligned vertically (overriden by side-specific), default top
+  titleFrontXAlignment?: xAlignment;    //How the front title should be aligned horizontally, default left
+  titleFrontYAlignment?: yAlignment;    //How the front title should be aligned vertically, default top
+  titleBackXAlignment?: xAlignment;     //How the back title should be aligned horizontally, default left
+  titleBackYAlignment?: yAlignment;     //How the back title should be aligned vertically, default top
+  contentXAlignment?: xAlignment;       //How the content should be aligned horizontally (overridden by side-specific), default, left
+  contentYAlignment?: yAlignment;       //How the content should be aligned vertically (overridden by side-specific), default, top
+  contentFrontXAlignment?: xAlignment;  //How the front content should be aligned horizontally, default left
+  contentFrontYAlignment?: yAlignment;  //How the front content should be aligned vertically, default top
+  contentBackXAlignment?: xAlignment;   //How the back content should be aligned horizontally, default left
+  contentBackYAlignment?: yAlignment;   //How the back content should be aligned vertically, default top
+
+  //Column Layout
+  xlColumns?: number,           //# of columns at xlSize screen width (px)
+  lgColumns?: number,           //# cols @ lgSize
+  mdColumns?: number,           //# cols @ mdSize
+  smColumns?: number,           //# cols @ smSize
+  xsColumns?: number,           //# cols @ xsSize
+  xlSize?: number,              //Minimum window size (px) for # xlColumns
+  lgSize?: number,              //Size for lgColumns
+  mdSize?: number,              //Size for mdColumns
+  smSize?: number,              //Size for smColumns
+  xsSize?: number               //Size for xsColumns
 
   //Event Handlers
   onClick?: (e?: any) => any;   //Additional behavior that should occur when the card is clicked
@@ -128,8 +135,13 @@ export class Deck extends Component<IDeckProps> {
   /* Render */
   render() {
     //Destructure objects
-    const { _style } = this;
-    const { cards } = this.props;
+    const { 
+      _style 
+    } = this;
+
+    const { 
+      cards 
+    } = this.props;
 
     return (
       <div style={_style.container}>
@@ -219,20 +231,20 @@ export class Card extends Component<ICardProps, ICardState> {
 
   /* Helpers */
   //Get the alignment CSS styles based on user-defined horizontal values
-  _getXJustification = (justification: 'left' | 'center' | 'right') => //TODO: Needs to be expanded/modified to handle different flex-directions
+  _getXJustification = (justification: xAlignment | undefined) => //TODO: Needs to be expanded/modified to handle different flex-directions
     justification === 'center'
       ? 'center'
       : justification === 'right'
         ? 'flex-end'
-        : 'flex-start';
+        : 'flex-start'; //Default, i.e. 'left'
 
   //Get the alignment CSS styles based on user-defined vertical values
-  _getYAlignment = (alignment: 'top' | 'center' | 'bottom') =>  //TODO: Needs to be expanded/modified to handle different flex-directions
+  _getYAlignment = (alignment: yAlignment | undefined) =>  //TODO: Needs to be expanded/modified to handle different flex-directions
     alignment === 'center'
       ? 'center'
       : alignment === 'bottom'
         ? 'flex-end'
-        : 'flex-start';
+        : 'flex-start'; //Default, i.e. 'top'
 
   //Switch the hovered state of the card to its opposite
   _switchHover = () => this.setState({isHovered: !this.state.isHovered});
@@ -294,10 +306,9 @@ export class Card extends Component<ICardProps, ICardState> {
     title: {
       ..._sharedStyleBoxSizing,
       ..._sharedStyleFlex,
-      alignItems: this._getYAlignment(this.props.titleYAlignment || 'top'),
       color: this.props.titleTextColor,
       fontSize: '1.5em',
-      justifyContent: this._getXJustification(this.props.titleXAlignment || 'left'),
+      justifyContent: this._getXJustification(this.props.titleXAlignment),
       padding: 10,
       width: '100%'
     },
@@ -327,10 +338,42 @@ export class Card extends Component<ICardProps, ICardState> {
   /* Render */
   render() {
     //Destructure objects
-    const { _style, _onClick, _switchHover, _getNumberOfColumns } = this;
-    const { title, titleFront, titleBack, front, back, width } = this.props;
-    const { flipped, isHovered } = this.state;
-    const containerWidth = width || `${ 100 / _getNumberOfColumns() }%`; //Split the cards into columns
+    const { 
+      _style, 
+      _onClick, 
+      _getXJustification, 
+      _getYAlignment, 
+      _switchHover, 
+      _getNumberOfColumns 
+    } = this;
+
+    const { 
+      titleFront, 
+      titleBack, 
+      front,
+      back, 
+      titleXAlignment,
+      titleYAlignment,
+      titleFrontXAlignment,
+      titleFrontYAlignment,
+      titleBackXAlignment,
+      titleBackYAlignment,
+      contentXAlignment,
+      contentYAlignment,
+      contentFrontXAlignment, 
+      contentFrontYAlignment, 
+      contentBackXAlignment, 
+      contentBackYAlignment,
+      width 
+    } = this.props;
+
+    const { 
+      flipped, 
+      isHovered 
+    } = this.state;
+
+    //Split the cards into columns
+    const containerWidth = width || `${ 100 / _getNumberOfColumns() }%`;
 
     return (
       <div
@@ -339,25 +382,39 @@ export class Card extends Component<ICardProps, ICardState> {
         onMouseEnter={_switchHover} //Add hover state
         onMouseLeave={_switchHover} //Remove hover state
       >
-        <div style={{
-          ..._style.card, 
-          ...(  //Apply styles if the card is being hovered
-            isHovered 
-              ? _style.cardHovered 
-              : {}
-          ), 
-          ...(  //Apply styles if the card is being flipped
-            flipped 
-              ? _style.cardFlipped 
-              : {}
-          )
-        }}>
+        <div 
+          style=
+            {
+              {
+                ..._style.card, 
+                ...(  //Apply styles if the card is being hovered
+                  isHovered 
+                    ? _style.cardHovered 
+                    : {}
+                ), 
+                ...(  //Apply styles if the card is being flipped
+                  flipped 
+                    ? _style.cardFlipped 
+                    : {}
+                )
+              }
+            }
+        >
           <div style={_style.front}>
             { 
-              titleFront || title 
-                ? <div style={_style.title}>
+              titleFront
+                ? <div 
+                    style=
                     {
-                      titleFront || title
+                      {
+                        ..._style.title,
+                        alignItems: this._getYAlignment(titleFrontYAlignment || titleYAlignment),
+                        justifyContent: _getXJustification(titleFrontXAlignment || titleXAlignment)
+                      }
+                    }
+                  >
+                    {
+                      titleFront
                     }
                   </div> 
                 : null 
@@ -366,8 +423,8 @@ export class Card extends Component<ICardProps, ICardState> {
               {
                 {
                   ..._style.content,
-                  alignItems:  this._getYAlignment(this.props.frontYAlignment || 'top'),
-                  justifyContent: this._getXJustification(this.props.frontXAlignment || 'left')
+                  alignItems: _getYAlignment(contentFrontYAlignment || contentYAlignment),
+                  justifyContent: _getXJustification(contentFrontXAlignment || contentXAlignment)
                 }
               }
             >
@@ -376,10 +433,18 @@ export class Card extends Component<ICardProps, ICardState> {
           </div>
           <div style={_style.back}>
             { 
-              titleBack || title 
-                ? <div style={_style.title}>
+              titleBack
+                ? <div style=
                     {
-                      titleBack || title
+                      {
+                        ..._style.title,
+                        alignItems: this._getYAlignment(titleBackYAlignment || titleYAlignment),
+                        justifyContent: _getXJustification(titleBackXAlignment || titleXAlignment)
+                      }
+                    }
+                  >
+                    {
+                      titleBack
                     }
                   </div> 
                 : null }
@@ -387,8 +452,8 @@ export class Card extends Component<ICardProps, ICardState> {
               {
                 {
                   ..._style.content,
-                  alignItems:  this._getYAlignment(this.props.backYAlignment || 'top'),
-                  justifyContent: this._getXJustification(this.props.backXAlignment || 'left')
+                  alignItems: _getYAlignment(contentBackYAlignment || contentYAlignment),
+                  justifyContent: _getXJustification(contentBackXAlignment || contentXAlignment)
                 }
               }
             >
