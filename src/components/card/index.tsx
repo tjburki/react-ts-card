@@ -1,79 +1,91 @@
-//Packages
+/* Packages */
 import * as React from "react";
 import { Component } from "react";
 
-//Shared Interfaces
+/* Shared Constants */
+//Flex-related shared styles
+const _sharedStyleFlex: React.CSSProperties = {
+  display: 'flex',
+  msFlex: 'flex',
+  WebkitFlex: 'flex'
+};
+
+//Box-sizing-related shared styles
+const _sharedStyleBoxSizing: React.CSSProperties = {
+  boxSizing: 'border-box'
+};
+
+/* Shared Interfaces */
+//Common properties of column-type layouts
 interface IColumnLayout {
-  xlColumns?: number,
-  lgColumns?: number,
-  mdColumns?: number,
-  smColumns?: number,
-  xsColumns?: number,
-  xlSize?: number,
-  lgSize?: number,
-  mdSize?: number,
-  smSize?: number,
-  xsSize?: number
+  xlColumns?: number, //# of columns at xlSize screen width (px)
+  lgColumns?: number, //# cols @ lgSize
+  mdColumns?: number, //# cols @ mdSize
+  smColumns?: number, //# cols @ smSize
+  xsColumns?: number, //# cols @ xsSize
+  xlSize?: number,    //Minimum window size (px) for # xlColumns
+  lgSize?: number,    //Size for lgColumns
+  mdSize?: number,    //Size for mdColumns
+  smSize?: number,    //Size for smColumns
+  xsSize?: number     //Size for xsColumns
 }
 
-//Component Interfaces
+/* Property Interfaces */
 interface IDeckProps extends ICardProps {
-  cards: ICardProps[]
+  cards: ICardProps[]   //List of cards we want to show in the Deck
 }
 
 interface ICardProps extends IColumnLayout {
   //Id/Key
-  id?: any;
+  id?: any;                     //User-supplied Id for card, will be used as key for iteration (otherwise index)
 
   //Titles
-  title?: string;
-  titleFront?: string;
-  titleBack?: string;
+  title?: string;               //The title of the card, front and back
+  titleFront?: string;          //The title of the card, front (overrides title)
+  titleBack?: string;           //The title of the card, back (overrides title)
 
   //Color
-  titleTextColor?: string;
-  contentTextColor?: string;
-  primaryColor?: string;
-  secondaryColor?: string;
-
-  //Style
-  style?: React.CSSProperties;
+  titleTextColor?: string;      //The color of the title text, default 'white'
+  contentTextColor?: string;    //The color of the content text, default 'black'
+  primaryColor?: string;        //The primary color of the card (header, border, hover color), default 'black'
+  secondaryColor?: string;      //The secondary color of the card (content), default 'white'
 
   //Format
-  margin?: number | string;
-  width?: number | string;
-  maxWidth?: number | string;
-  height?: number | string;
+  margin?: number | string;     //Space between this card and others elements on the page, default 15
+  width?: number | string;      //Specific width of the card (CSS style)
+  maxWidth?: number | string;   //Maximum width of the card (CSS style)
+  height?: number | string;     //Height of the card, default 200 //TODO: Let's get rid of this!  My goal is to have a card that adjusts to content height
 
   //Flipping
-  isFlippable?: boolean;
-  isFlipped?: boolean;
-  allowFlipOnAnchor?: boolean;
-  flipSeconds?: number;
+  isFlippable?: boolean;        //Can this card be flipped, default true
+  isFlipped?: boolean;          //Is this card currently flipped, default false
+  allowFlipOnAnchor?: boolean;  //Should the card flip when an anchor tag is clicked, default false
+  flipSeconds?: number;         //The length of the flipping animation, default .75
 
   //Content
-  front?: any; //Expected to be JSX/TSX
-  back?: any; //Expected to be JSX/TSX
+  front?: any;                  //What appears on the front of the card, can be text or JSX/TSX
+  back?: any;                   //What appears on the back of the card, can be text or JSX/TSX
 
-  //Title & Content Alignment
-  titleXAlignment?: string;
-  titleYAlignment?: string;
-  frontXAlignment?: string;
-  frontYAlignment?: string;
-  backXAlignment?: string;
-  backYAlignment?: string;
+  //Title & Content Alignment                         
+  titleXAlignment?: 'left' | 'center' | 'right';      //How the title should be aligned horizontally, default left
+  titleYAlignment?: 'top' | 'center' | 'bottom';      //How the title should be aligned vertically, default top
+  frontXAlignment?: 'left' | 'center' | 'right';      //How the front content should be aligned horizontally, default left
+  frontYAlignment?: 'top' | 'center' | 'bottom';      //How the front content should be aligned vertically, default top
+  backXAlignment?: 'left' | 'center' | 'right';       //How the back content should be aligned horizontally, default left
+  backYAlignment?: 'top' | 'center' | 'bottom';       //How the back content should be aligned vertically, default top
 
   //Event Handlers
-  onClick?: (e?: any) => any;
+  onClick?: (e?: any) => any;   //Additional behavior that should occur when the card is clicked
 }
 
+/* State Interfaces */
 interface ICardState {
-  flipped: boolean;
-  isHovered: boolean;
-  windowSize: number;
+  flipped: boolean;   //Is the card currently flipped, default false
+  isHovered: boolean; //Is the card currently hovered over, default false
+  windowSize: number; //The current window size to use for determining width in column layout
 }
 
-//Style Interfaces
+/* Style Interfaces */
 interface IDeckStyles {
   container: React.CSSProperties;
 }
@@ -83,44 +95,49 @@ interface ICardStyles {
   card: React.CSSProperties;
   cardFlipped: React.CSSProperties;
   cardHovered: React.CSSProperties;
+  title: React.CSSProperties;
   front: React.CSSProperties;
   back: React.CSSProperties;
-  title: React.CSSProperties;
   content: React.CSSProperties;
 }
 
-//Deck
+/*
+ *  Deck
+ *    Container for cards.
+ * 
+ *    User can define # of columns at certain screen thresholds, as
+ *    well as the width of the thresholds themselves.
+ * 
+ *    All card properties can be passed to the Deck, which will use
+ *    those properties to render the cards, unless overridden by the
+ *    card itself.
+ */
 export class Deck extends Component<IDeckProps> {
-  //Initialize State
-  state = {
-    windowSize: window.innerWidth
-  }
-
-  //Styles
+  /* Styles */
   _style: IDeckStyles = {
     container: {
-      display: 'flex',
-      justifyContent: 'flex-start',
+      ..._sharedStyleBoxSizing,
+      ..._sharedStyleFlex, 
       flexWrap: 'wrap',
-      width: '100%',
+      justifyContent: 'flex-start',
       padding: 15,
-      boxSizing: 'border-box'
+      width: '100%'
     }
   };
 
+  /* Render */
   render() {
     //Destructure objects
     const { _style } = this;
     const { cards } = this.props;
-    const cardProps = this.props as ICardProps; //TODO: This includes all props so fix it
 
     return (
       <div style={_style.container}>
-        { cards.map((c, i) => <Card key={c.id || i}
+        { cards.map((c, i) => <Card key={c.id || i} //Use Id or index in array for key
           { //Pass the rest of the props
             ...{
-              ...cardProps, //Card properties passed in to Deck as defaults
-              ...c //Individual card properties passed in that can overwrite Deck defaults
+              ...this.props,  //Pass in all properties, which includes all properties available to Cards
+              ...c            //Individual card properties passed in that can overwrite Deck defaults
             }
           } 
         /> ) }
@@ -129,64 +146,71 @@ export class Deck extends Component<IDeckProps> {
   }
 }
 
-//Card
+/*
+ *  Card
+ *    Flippable information card.
+ * 
+ *    User can define # of columns at certain screen thresholds, as
+ *    well as the width of the thresholds themselves.
+ * 
+ *    Card will leave room for # of other cards within parent that are
+ *    defined in the # of columns at the current screen width.
+ * 
+ *    Can flip or perform other behaviors on click.
+ */
 export class Card extends Component<ICardProps, ICardState> {
-  //Default Properties
+  /* Default Properties */
   static defaultProps: ICardProps = {
-    isFlippable: true,
-    isFlipped: false,
+    allowFlipOnAnchor: false,
+    contentTextColor: 'black',
     flipSeconds: .75,
     height: 200,
-    allowFlipOnAnchor: false,
+    isFlippable: true,
+    isFlipped: false,
+    margin: 15,
     primaryColor: 'black',
     secondaryColor: 'white',
-    titleTextColor: 'white',
-    contentTextColor: 'black',
-    margin: 15
+    titleTextColor: 'white'
   };
 
-  //Initialize State
+  /* Initialize State */
   state: ICardState = {
-    flipped: !!this.props.isFlipped,
+    flipped: !!this.props.isFlipped,  //!! => Turn this into bool type in case it is undefined
     isHovered: false,
-    windowSize: window.innerWidth
+    windowSize: window.innerWidth     //Initialize to current window size
   };
 
-  //Styles
-  _sharedStyleBoxSizing: React.CSSProperties = {
-    boxSizing: 'border-box'
-  }
-
+  /* Styles */
   _sharedStyleFrontBack: React.CSSProperties = {
-    backfaceVisibility: 'hidden', 
-    position: 'absolute',
-    width: '100%',
-    display: 'flex',
+    ..._sharedStyleFlex,
+    backfaceVisibility: 'hidden',
     flexDirection: 'column',
-    height: '100%'
+    height: '100%',
+    position: 'absolute',
+    width: '100%'
   }
 
   _style: ICardStyles = {
     container: {
-      perspective: 1000,
+      ..._sharedStyleBoxSizing,
       padding: this.props.margin,
+      perspective: 1000,   
       width: this.props.width,
-      ...this._sharedStyleBoxSizing
     },
     card: {
-      width: '100%',
-      height: this.props.height,
-      borderRadius: 5,
+      ..._sharedStyleBoxSizing,   
+      backgroundColor: this.props.primaryColor,    
       border: '5px solid',
-      userSelect: 'none',
+      borderColor: this.props.primaryColor,
+      borderRadius: 5,
       boxShadow: '0px 9px 18px 0px',
       cursor: 'pointer',
-      transition: `${this.props.flipSeconds}s`,
-      transformStyle: 'preserve-3d',
+      height: this.props.height,
       position: 'relative',
-      backgroundColor: this.props.primaryColor,
-      borderColor: this.props.primaryColor,
-      ...this._sharedStyleBoxSizing
+      transformStyle: 'preserve-3d',
+      transition: `${this.props.flipSeconds}s`, 
+      userSelect: 'none',
+      width: '100%'
     },
     cardFlipped: {
       transform: 'rotateY(-180deg)'
@@ -195,35 +219,37 @@ export class Card extends Component<ICardProps, ICardState> {
       boxShadow: '0px 10px 18px 3px',
       color: this.props.primaryColor
     },
+    title: {
+      ..._sharedStyleBoxSizing,
+      color: this.props.titleTextColor,
+      fontSize: '1.5em',
+      padding: 10,
+      width: '100%'
+    },
     front: {
       ...this._sharedStyleFrontBack,
-      transform: 'rotateY(0deg)'
+      transform: 'rotateY(0deg)',
+      
     },
     back: {
       ...this._sharedStyleFrontBack,
       transform: 'rotateY(180deg)'
     },
-    title: {
-      padding: 10,
-      width: '100%',
-      fontSize: '1.5em',
-      color: this.props.titleTextColor,
-      ...this._sharedStyleBoxSizing
-    },
     content: {
-      padding: 15,
-      width: '100%',
-      fontSize: '1.2em',
-      textAlign: 'center',
-      flex: 1,
-      overflowY: 'auto',
-      color: this.props.contentTextColor,
+      ..._sharedStyleBoxSizing,
       backgroundColor: this.props.secondaryColor,
-      ...this._sharedStyleBoxSizing
+      color: this.props.contentTextColor,
+      flex: 1,
+      fontSize: '1.2em',
+      overflowY: 'auto',
+      padding: 15,  
+      textAlign: 'center',
+      width: '100%'
     }
   };
 
-  //Handlers
+  /* Handlers */
+  //Flip the card if allowed, call any user-defined behavior
   _onClick = (e: any) => {
     const { onClick, isFlippable, allowFlipOnAnchor } = this.props;
 
@@ -235,18 +261,25 @@ export class Card extends Component<ICardProps, ICardState> {
     if(onClick) onClick();
   }
 
-  //Calculate Columns
+  /* Calculate Columns */
+  //Determine how many columns we want to show at each threshold, default is 1
+  //Use the largest defined value we can find at each window size
   _xsColumns = this.props.xsColumns || 1;
   _smColumns = this.props.smColumns || this._xsColumns;
   _mdColumns = this.props.mdColumns || this._smColumns;
   _lgColumns = this.props.lgColumns || this._mdColumns;
   _xlColumns = this.props.xlColumns || this._lgColumns;
 
-  //Helpers
+  /* Helpers */
+  //Switch the hovered state of the card to its opposite
   _switchHover = () => this.setState({isHovered: !this.state.isHovered});
+
+  //Set the window size in the card's state so we can resize if necessary
   _updateWidowSize = () => this.setState({windowSize: window.innerWidth});
+
+  //Get the number of columns the user wants based on the current window size
   _getNumberOfColumns = () => 
-    this.state.windowSize >= (this.props.xlSize || 1200)
+    Math.abs(this.state.windowSize >= (this.props.xlSize || 1200)
       ? this._xlColumns
       : this.state.windowSize >= (this.props.lgSize || 1000)
         ? this._lgColumns
@@ -254,41 +287,70 @@ export class Card extends Component<ICardProps, ICardState> {
           ? this._mdColumns
           : this.state.windowSize >= (this.props.lgSize || 600)
             ? this._smColumns
-            : this._xsColumns;
+            : this._xsColumns);
 
-  //Lifecycle
+  /* Lifecycle */
+  //Add a listener that updates the window size in the card's state on resize
   componentDidMount() {
     window.addEventListener('resize', this._updateWidowSize);
   }
  
+  //Remove the window resize listener on unload
   componentWillUnmount() {
       window.removeEventListener('resize', this._updateWidowSize);
   }
 
-  //Render
+  /* Render */
   render() {
     //Destructure objects
     const { _style, _onClick, _switchHover, _getNumberOfColumns } = this;
-    const { title, front, back, style, width } = this.props;
+    const { title, titleFront, titleBack, front, back, width } = this.props;
     const { flipped, isHovered } = this.state;
-    const containerWidth = width || `${100 /  _getNumberOfColumns()}%`; //Split the cards into columns
+    const containerWidth = width || `${ 100 / _getNumberOfColumns() }%`; //Split the cards into columns
 
     return (
       <div
-        style={{..._style.container, width: containerWidth, ...style}}
-        onClick={_onClick}
-        onMouseEnter={_switchHover}
-        onMouseLeave={_switchHover}
+        style={{..._style.container, width: containerWidth}}
+        onClick={_onClick} //Run flip animation (if allowed) and user-defined click actions
+        onMouseEnter={_switchHover} //Add hover state
+        onMouseLeave={_switchHover} //Remove hover state
       >
-        <div style={{..._style.card, ...(isHovered ? _style.cardHovered : {}), ...(flipped ? _style.cardFlipped : {})}}>
+        <div style={{
+          ..._style.card, 
+          ...(  //Apply styles if the card is being hovered
+            isHovered 
+              ? _style.cardHovered 
+              : {}
+          ), 
+          ...(  //Apply styles if the card is being flipped
+            flipped 
+              ? _style.cardFlipped 
+              : {}
+          )
+        }}>
           <div style={_style.front}>
-            { title ? <div style={_style.title}>{title}</div> : null }
+            { 
+              title 
+                ? <div style={_style.title}>
+                    {
+                      titleFront || title
+                    }
+                  </div> 
+                : null 
+            }
             <div style={_style.content}>
               <div>{front}</div>
             </div>
           </div>
           <div style={_style.back}>
-            { title ? <div style={_style.title}>{title}</div> : null }
+            { 
+              title 
+                ? <div style={_style.title}>
+                    {
+                      titleBack || title
+                    }
+                  </div> 
+                : null }
             <div style={_style.content}>
               <div>{back}</div>
             </div>

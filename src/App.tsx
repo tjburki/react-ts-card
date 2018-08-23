@@ -8,20 +8,25 @@ export default class App extends Component {
     return (
       <div>
         <Deck
-          lgColumns={5}
+          xlColumns={5}
+          lgColumns={4}
           mdColumns={3}
           smColumns={2}
+          secondaryColor='purple'
+          contentTextColor='white'
           cards={[
             {
-              title: 'Test',
               front: 'Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf Hey lfsa fasfd asdf  asdfd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf ',
               back: 'Ho'
             },
             {
               title: 'Test2',
+              titleFront: 'Hello',
+              titleBack: 'There',
               front: <div style={{backgroundColor: 'orange'}}>Hello there</div>,
               back: <div style={{backgroundColor: 'orange'}}>Hello there</div>,
-              isFlipped: true
+              isFlipped: true,
+              primaryColor: 'red'
             },
             {
               title: 'Test3',
