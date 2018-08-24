@@ -2,6 +2,9 @@
 import * as React from "react";
 import { Component } from "react";
 
+/* Stylesheet */
+import './card.css'; //Unfortunately need this for backface-visibilty compatibility on mobile
+
 /* Shared Constants */
 //Box-sizing-related shared styles
 const sharedStyleBoxSizing: React.CSSProperties = {
@@ -275,7 +278,6 @@ export class Card extends Component<ICardProps, ICardState> {
   /* Styles */
   _sharedStyleFrontBack: React.CSSProperties = {
     ...sharedStyleFlex,
-    backfaceVisibility: 'hidden',
     flexDirection: 'column',
     height: '100%',
     position: 'absolute',
@@ -408,7 +410,7 @@ export class Card extends Component<ICardProps, ICardState> {
               }
             }
         >
-          <div style={_style.front}>
+          <div className="backface" style={_style.front}>
             { 
               titleFront || title
                 ? <div 
@@ -439,7 +441,7 @@ export class Card extends Component<ICardProps, ICardState> {
               {front}
             </div>
           </div>
-          <div style={_style.back}>
+          <div className="backface" style={_style.back}>
             { 
               titleBack || title
                 ? <div style=
