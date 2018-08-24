@@ -39,69 +39,72 @@ const getYAlignment = (alignment: yAlignment | undefined) =>  //TODO: Needs to b
 /* Property Interfaces */
 interface IDeckProps extends ICardProps {
   cards: ICardProps[];    //List of cards we want to show in the Deck
-  deckXAlign?: xAlignment; //How to align the cards in the deck horizontally
-  deckYAlign?: yAlignment; //How to align the cards in the deck vertically
+  deckXAlign?: xAlignment; //How to align the cards in the deck horizontally, default 'left'
+  deckYAlign?: yAlignment; //How to align the cards in the deck vertically, default 'top'
 }
 
 interface ICardProps {
   //Id/Key
-  id?: any;                     //User-supplied Id for card, will be used as key for iteration (otherwise index)
+  id?: any;                             //User-supplied Id for card, will be used as key for iteration (otherwise index)
 
   //Titles
-  title?: any;                  //The title of the card, front and back (can be JSX/TSX)
-  titleFront?: any;             //The title of the card, front (can be JSX/TSX, overrides title)
-  titleBack?: any;              //The title of the card, back (can be JSX/TSX, overrides title)
+  title?: any;                          //The title of the card, front and back (can be JSX/TSX)
+  titleFront?: any;                     //The title of the card, front (can be JSX/TSX, overrides title)
+  titleBack?: any;                      //The title of the card, back (can be JSX/TSX, overrides title)
 
   //Color
-  titleTextColor?: string;      //The color of the title text, default 'white'
-  contentTextColor?: string;    //The color of the content text, default 'black'
-  primaryColor?: string;        //The primary color of the card (header, border, hover color), default 'black'
-  secondaryColor?: string;      //The secondary color of the card (content), default 'white'
+  titleTextColor?: string;              //The color of the title text, default 'white'
+  contentTextColor?: string;            //The color of the content text, default 'black'
+  primaryColor?: string;                //The primary color of the card (header, border, hover color), default 'black'
+  secondaryColor?: string;              //The secondary color of the card (content), default 'white'
 
   //Format
-  margin?: number | string;     //Space between this card and others elements on the page, default 15
-  width?: number | string;      //Specific width of the card (CSS style)
-  maxWidth?: number | string;   //Maximum width of the card (CSS style)
-  height?: number | string;     //Height of the card, default 200 //TODO: Let's get rid of this!  My goal is to have a card that adjusts to content height
+  margin?: number | string;             //Space between this card and others elements on the page, default 15
+  width?: number | string;              //Specific width of the card (CSS style)
+  maxWidth?: number | string;           //Maximum width of the card (CSS style)
+  height?: number | string;             //Height of the card, default 200 //TODO: Let's get rid of this!  My goal is to have a card that adjusts to content height
+  contentPadding?: number | string;     //Padding for content, default 15
 
   //Flipping
-  isFlippable?: boolean;        //Can this card be flipped, default true
-  isFlipped?: boolean;          //Is this card currently flipped, default false
-  allowFlipOnAnchor?: boolean;  //Should the card flip when an anchor tag is clicked, default false
-  flipSeconds?: number;         //The length of the flipping animation, default .75
+  isFlippable?: boolean;                //Can this card be flipped, default true
+  isFlipped?: boolean;                  //Is this card currently flipped, default false
+  allowFlipOnAnchor?: boolean;          //Should the card flip when an anchor tag is clicked, default false
+  flipSeconds?: number;                 //The length of the flipping animation, default .75
 
   //Content
-  front?: any;                  //What appears on the front of the card, can be text or JSX/TSX
-  back?: any;                   //What appears on the back of the card, can be text or JSX/TSX
+  front?: any;                          //What appears on the front of the card, can be text or JSX/TSX
+  back?: any;                           //What appears on the back of the card, can be text or JSX/TSX
 
-  //Title & Content Alignment                         
-  titleXAlignment?: xAlignment;         //How the title should be aligned horizontally (overriden by side-specific), default left
-  titleYAlignment?: yAlignment;         //How the title should be aligned vertically (overriden by side-specific), default top
-  titleFrontXAlignment?: xAlignment;    //How the front title should be aligned horizontally, default left
-  titleFrontYAlignment?: yAlignment;    //How the front title should be aligned vertically, default top
-  titleBackXAlignment?: xAlignment;     //How the back title should be aligned horizontally, default left
-  titleBackYAlignment?: yAlignment;     //How the back title should be aligned vertically, default top
-  contentXAlignment?: xAlignment;       //How the content should be aligned horizontally (overridden by side-specific), default, left
-  contentYAlignment?: yAlignment;       //How the content should be aligned vertically (overridden by side-specific), default, top
-  contentFrontXAlignment?: xAlignment;  //How the front content should be aligned horizontally, default left
-  contentFrontYAlignment?: yAlignment;  //How the front content should be aligned vertically, default top
-  contentBackXAlignment?: xAlignment;   //How the back content should be aligned horizontally, default left
-  contentBackYAlignment?: yAlignment;   //How the back content should be aligned vertically, default top
+  //Title & Content Alignment
+  xAlignment?: xAlignment;              //How everything on the card should be aligned horizontally (fall back), default 'left'
+  yAlignment?: yAlignment;              //How everything on the card should be aligned vertically (fall back), default 'top'                         
+  titleXAlignment?: xAlignment;         //How the title should be aligned horizontally (overriden by side-specific), default 'left'
+  titleYAlignment?: yAlignment;         //How the title should be aligned vertically (overriden by side-specific), default 'top'
+  titleFrontXAlignment?: xAlignment;    //How the front title should be aligned horizontally, default 'left'
+  titleFrontYAlignment?: yAlignment;    //How the front title should be aligned vertically, default 'top'
+  titleBackXAlignment?: xAlignment;     //How the back title should be aligned horizontally, default 'left'
+  titleBackYAlignment?: yAlignment;     //How the back title should be aligned vertically, default 'top'
+  contentXAlignment?: xAlignment;       //How the content should be aligned horizontally (overridden by side-specific), default 'left'
+  contentYAlignment?: yAlignment;       //How the content should be aligned vertically (overridden by side-specific), default 'top'
+  contentFrontXAlignment?: xAlignment;  //How the front content should be aligned horizontally, default 'left'
+  contentFrontYAlignment?: yAlignment;  //How the front content should be aligned vertically, default 'top'
+  contentBackXAlignment?: xAlignment;   //How the back content should be aligned horizontally, default 'left'
+  contentBackYAlignment?: yAlignment;   //How the back content should be aligned vertically, default 'top'
 
   //Column Layout
-  xlColumns?: number,           //# of columns at xlSize screen width (px)
-  lgColumns?: number,           //# cols @ lgSize
-  mdColumns?: number,           //# cols @ mdSize
-  smColumns?: number,           //# cols @ smSize
-  xsColumns?: number,           //# cols @ xsSize
-  xlSize?: number,              //Minimum window size (px) for # xlColumns
-  lgSize?: number,              //Size for lgColumns
-  mdSize?: number,              //Size for mdColumns
-  smSize?: number,              //Size for smColumns
-  xsSize?: number               //Size for xsColumns
+  xlColumns?: number,                   //# of columns at xlSize screen width (px), all default 1
+  lgColumns?: number,                   //# cols @ lgSize
+  mdColumns?: number,                   //# cols @ mdSize
+  smColumns?: number,                   //# cols @ smSize
+  xsColumns?: number,                   //# cols @ xsSize
+  xlSize?: number,                      //Minimum window size (px) for # xlColumns, default 1200
+  lgSize?: number,                      //Size for lgColumns, default 1000
+  mdSize?: number,                      //Size for mdColumns, default 800
+  smSize?: number,                      //Size for smColumns, default 600
+  xsSize?: number                       //Size for xsColumns, default 0
 
   //Event Handlers
-  onClick?: (e?: any) => any;   //Additional behavior that should occur when the card is clicked
+  onClick?: (e?: React.MouseEvent<HTMLElement>) => any;   //Additional behavior that should occur when the card is clicked
 }
 
 /* State Interfaces */
@@ -198,6 +201,7 @@ export class Card extends Component<ICardProps, ICardState> {
   /* Default Properties */
   static defaultProps: ICardProps = {
     allowFlipOnAnchor: false,
+    contentPadding: 15,
     contentTextColor: 'black',
     flipSeconds: .75,
     height: 200,
@@ -251,7 +255,7 @@ export class Card extends Component<ICardProps, ICardState> {
 
   /* Helpers */
     //Switch the hovered state of the card to its opposite
-  _switchHover = () => this.setState({isHovered: !this.state.isHovered});
+  _switchHover = (hovered: boolean) => this.setState({isHovered: hovered});
 
   //Set the window size in the card's state so we can resize if necessary
   _updateWidowSize = () => this.setState({windowSize: window.innerWidth});
@@ -333,7 +337,7 @@ export class Card extends Component<ICardProps, ICardState> {
       flex: 1,
       fontSize: '1.2em',
       overflowY: 'auto',
-      padding: 15,
+      padding: this.props.contentPadding,
       width: '100%'
     }
   };
@@ -354,6 +358,8 @@ export class Card extends Component<ICardProps, ICardState> {
       titleBack, 
       front,
       back, 
+      xAlignment,
+      yAlignment,
       titleXAlignment,
       titleYAlignment,
       titleFrontXAlignment,
@@ -381,8 +387,8 @@ export class Card extends Component<ICardProps, ICardState> {
       <div
         style={{..._style.container, width: containerWidth}}
         onClick={_onClick} //Run flip animation (if allowed) and user-defined click actions
-        onMouseEnter={_switchHover} //Add hover state
-        onMouseLeave={_switchHover} //Remove hover state
+        onMouseEnter={() => _switchHover(true)} //Add hover state
+        onMouseLeave={() => _switchHover(false)} //Remove hover state
       >
         <div 
           style=
@@ -410,8 +416,8 @@ export class Card extends Component<ICardProps, ICardState> {
                     {
                       {
                         ..._style.title,
-                        alignItems: getYAlignment(titleFrontYAlignment || titleYAlignment),
-                        justifyContent: getXJustification(titleFrontXAlignment || titleXAlignment)
+                        alignItems: getYAlignment(yAlignment || titleFrontYAlignment || titleYAlignment),
+                        justifyContent: getXJustification(xAlignment || titleFrontXAlignment || titleXAlignment)
                       }
                     }
                   >
@@ -425,12 +431,12 @@ export class Card extends Component<ICardProps, ICardState> {
               {
                 {
                   ..._style.content,
-                  alignItems: getYAlignment(contentFrontYAlignment || contentYAlignment),
-                  justifyContent: getXJustification(contentFrontXAlignment || contentXAlignment)
+                  alignItems: getYAlignment(yAlignment || contentFrontYAlignment || contentYAlignment),
+                  justifyContent: getXJustification(xAlignment || contentFrontXAlignment || contentXAlignment)
                 }
               }
             >
-              <div>{front}</div>
+              {front}
             </div>
           </div>
           <div style={_style.back}>
@@ -440,8 +446,8 @@ export class Card extends Component<ICardProps, ICardState> {
                     {
                       {
                         ..._style.title,
-                        alignItems: getYAlignment(titleBackYAlignment || titleYAlignment),
-                        justifyContent: getXJustification(titleBackXAlignment || titleXAlignment)
+                        alignItems: getYAlignment(yAlignment || titleBackYAlignment || titleYAlignment),
+                        justifyContent: getXJustification(xAlignment || titleBackXAlignment || titleXAlignment)
                       }
                     }
                   >
@@ -454,12 +460,12 @@ export class Card extends Component<ICardProps, ICardState> {
               {
                 {
                   ..._style.content,
-                  alignItems: getYAlignment(contentBackYAlignment || contentYAlignment),
-                  justifyContent: getXJustification(contentBackXAlignment || contentXAlignment)
+                  alignItems: getYAlignment(yAlignment || contentBackYAlignment || contentYAlignment),
+                  justifyContent: getXJustification(xAlignment || contentBackXAlignment || contentXAlignment)
                 }
               }
             >
-              <div>{back}</div>
+              {back}
             </div>
           </div>
         </div>
