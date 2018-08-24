@@ -4,12 +4,12 @@ import { Component } from "react";
 
 /* Shared Constants */
 //Box-sizing-related shared styles
-const _sharedStyleBoxSizing: React.CSSProperties = {
+const sharedStyleBoxSizing: React.CSSProperties = {
   boxSizing: 'border-box'
 };
 
 //Flex-related shared styles
-const _sharedStyleFlex: React.CSSProperties = {
+const sharedStyleFlex: React.CSSProperties = {
   display: 'flex',
   msFlex: 'flex',
   WebkitFlex: 'flex'
@@ -19,9 +19,28 @@ const _sharedStyleFlex: React.CSSProperties = {
 type xAlignment = 'left' | 'center' | 'right';
 type yAlignment = 'top' | 'center' | 'bottom';
 
+/* Shared Helpers */
+//Get the alignment CSS styles based on user-defined horizontal values
+const getXJustification = (justification: xAlignment | undefined) => //TODO: Needs to be expanded/modified to handle different flex-directions
+  justification === 'center'
+    ? 'center'
+    : justification === 'right'
+      ? 'flex-end'
+      : 'flex-start'; //Default, i.e. 'left'
+
+//Get the alignment CSS styles based on user-defined vertical values
+const getYAlignment = (alignment: yAlignment | undefined) =>  //TODO: Needs to be expanded/modified to handle different flex-directions
+  alignment === 'center'
+    ? 'center'
+    : alignment === 'bottom'
+      ? 'flex-end'
+      : 'flex-start'; //Default, i.e. 'top'
+      
 /* Property Interfaces */
 interface IDeckProps extends ICardProps {
-  cards: ICardProps[]   //List of cards we want to show in the Deck
+  cards: ICardProps[];    //List of cards we want to show in the Deck
+  deckXAlign?: xAlignment; //How to align the cards in the deck horizontally
+  deckYAlign?: yAlignment; //How to align the cards in the deck vertically
 }
 
 interface ICardProps {
@@ -29,9 +48,9 @@ interface ICardProps {
   id?: any;                     //User-supplied Id for card, will be used as key for iteration (otherwise index)
 
   //Titles
-  title?: string;               //The title of the card, front and back
-  titleFront?: string;          //The title of the card, front (overrides title)
-  titleBack?: string;           //The title of the card, back (overrides title)
+  title?: any;                  //The title of the card, front and back (can be JSX/TSX)
+  titleFront?: any;             //The title of the card, front (can be JSX/TSX, overrides title)
+  titleBack?: any;              //The title of the card, back (can be JSX/TSX, overrides title)
 
   //Color
   titleTextColor?: string;      //The color of the title text, default 'white'
@@ -123,10 +142,11 @@ export class Deck extends Component<IDeckProps> {
   /* Styles */
   _style: IDeckStyles = {
     container: {
-      ..._sharedStyleBoxSizing,
-      ..._sharedStyleFlex, 
+      ...sharedStyleBoxSizing,
+      ...sharedStyleFlex, 
+      alignItems: getYAlignment(this.props.deckYAlign),
       flexWrap: 'wrap',
-      justifyContent: 'flex-start',
+      justifyContent: getXJustification(this.props.deckXAlign),
       padding: 15,
       width: '100%'
     }
@@ -230,23 +250,7 @@ export class Card extends Component<ICardProps, ICardState> {
   }
 
   /* Helpers */
-  //Get the alignment CSS styles based on user-defined horizontal values
-  _getXJustification = (justification: xAlignment | undefined) => //TODO: Needs to be expanded/modified to handle different flex-directions
-    justification === 'center'
-      ? 'center'
-      : justification === 'right'
-        ? 'flex-end'
-        : 'flex-start'; //Default, i.e. 'left'
-
-  //Get the alignment CSS styles based on user-defined vertical values
-  _getYAlignment = (alignment: yAlignment | undefined) =>  //TODO: Needs to be expanded/modified to handle different flex-directions
-    alignment === 'center'
-      ? 'center'
-      : alignment === 'bottom'
-        ? 'flex-end'
-        : 'flex-start'; //Default, i.e. 'top'
-
-  //Switch the hovered state of the card to its opposite
+    //Switch the hovered state of the card to its opposite
   _switchHover = () => this.setState({isHovered: !this.state.isHovered});
 
   //Set the window size in the card's state so we can resize if necessary
@@ -266,7 +270,7 @@ export class Card extends Component<ICardProps, ICardState> {
 
   /* Styles */
   _sharedStyleFrontBack: React.CSSProperties = {
-    ..._sharedStyleFlex,
+    ...sharedStyleFlex,
     backfaceVisibility: 'hidden',
     flexDirection: 'column',
     height: '100%',
@@ -276,13 +280,13 @@ export class Card extends Component<ICardProps, ICardState> {
 
   _style: ICardStyles = {
     container: {
-      ..._sharedStyleBoxSizing,
+      ...sharedStyleBoxSizing,
       padding: this.props.margin, //Oh-ho! What a dangerous game I play with your emotions...
       perspective: 1000,   
       width: this.props.width,
     },
     card: {
-      ..._sharedStyleBoxSizing,   
+      ...sharedStyleBoxSizing,   
       backgroundColor: this.props.primaryColor,    
       border: '5px solid',
       borderColor: this.props.primaryColor,
@@ -304,16 +308,16 @@ export class Card extends Component<ICardProps, ICardState> {
       color: this.props.primaryColor
     },
     title: {
-      ..._sharedStyleBoxSizing,
-      ..._sharedStyleFlex,
+      ...sharedStyleBoxSizing,
+      ...sharedStyleFlex,
       color: this.props.titleTextColor,
       fontSize: '1.5em',
-      justifyContent: this._getXJustification(this.props.titleXAlignment),
+      justifyContent: getXJustification(this.props.titleXAlignment),
       padding: 10,
       width: '100%'
     },
     front: {
-      ..._sharedStyleFlex,
+      ...sharedStyleFlex,
       ...this._sharedStyleFrontBack,
       transform: 'rotateY(0deg)'
     },
@@ -322,8 +326,8 @@ export class Card extends Component<ICardProps, ICardState> {
       transform: 'rotateY(180deg)'
     },
     content: {
-      ..._sharedStyleBoxSizing,
-      ..._sharedStyleFlex,
+      ...sharedStyleBoxSizing,
+      ...sharedStyleFlex,
       backgroundColor: this.props.secondaryColor,
       color: this.props.contentTextColor,
       flex: 1,
@@ -339,9 +343,7 @@ export class Card extends Component<ICardProps, ICardState> {
     //Destructure objects
     const { 
       _style, 
-      _onClick, 
-      _getXJustification, 
-      _getYAlignment, 
+      _onClick,  
       _switchHover, 
       _getNumberOfColumns 
     } = this;
@@ -408,8 +410,8 @@ export class Card extends Component<ICardProps, ICardState> {
                     {
                       {
                         ..._style.title,
-                        alignItems: this._getYAlignment(titleFrontYAlignment || titleYAlignment),
-                        justifyContent: _getXJustification(titleFrontXAlignment || titleXAlignment)
+                        alignItems: getYAlignment(titleFrontYAlignment || titleYAlignment),
+                        justifyContent: getXJustification(titleFrontXAlignment || titleXAlignment)
                       }
                     }
                   >
@@ -423,8 +425,8 @@ export class Card extends Component<ICardProps, ICardState> {
               {
                 {
                   ..._style.content,
-                  alignItems: _getYAlignment(contentFrontYAlignment || contentYAlignment),
-                  justifyContent: _getXJustification(contentFrontXAlignment || contentXAlignment)
+                  alignItems: getYAlignment(contentFrontYAlignment || contentYAlignment),
+                  justifyContent: getXJustification(contentFrontXAlignment || contentXAlignment)
                 }
               }
             >
@@ -438,8 +440,8 @@ export class Card extends Component<ICardProps, ICardState> {
                     {
                       {
                         ..._style.title,
-                        alignItems: this._getYAlignment(titleBackYAlignment || titleYAlignment),
-                        justifyContent: _getXJustification(titleBackXAlignment || titleXAlignment)
+                        alignItems: getYAlignment(titleBackYAlignment || titleYAlignment),
+                        justifyContent: getXJustification(titleBackXAlignment || titleXAlignment)
                       }
                     }
                   >
@@ -452,8 +454,8 @@ export class Card extends Component<ICardProps, ICardState> {
               {
                 {
                   ..._style.content,
-                  alignItems: _getYAlignment(contentBackYAlignment || contentYAlignment),
-                  justifyContent: _getXJustification(contentBackXAlignment || contentXAlignment)
+                  alignItems: getYAlignment(contentBackYAlignment || contentYAlignment),
+                  justifyContent: getXJustification(contentBackXAlignment || contentXAlignment)
                 }
               }
             >

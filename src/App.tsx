@@ -12,6 +12,7 @@ export default class App extends Component {
           lgColumns={4}
           mdColumns={3}
           smColumns={2}
+          deckXAlign='center'
           primaryColor='#c5050c'
           secondaryColor='white'
           contentTextColor='black'
