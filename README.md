@@ -101,6 +101,9 @@ Try out the card here: https://codesandbox.io/s/qr37pyqjj
 
 Known Issues
 ------------
+### Sandbox on Mobile
+There is an issue with the backface-visibility in the sandbox on mobile where both sides are shown when flipped.  This problem has been alleviated in other environments but has not yet been fixed for the emulator.  Moving more styles of of the .tsx into the .css file might help.
+
 ### Browser Compatibility
 Everything will be great in a real browser (read: Chrome).  Some older versions of IE (< 11), for example, might have a little trouble.  Even Edge can be rough with the flip animation ::facepalm::, especially in the emulator used by the <a href="#example">Example</a>.    Better compatibility to come!
 

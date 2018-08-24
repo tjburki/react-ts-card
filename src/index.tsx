@@ -325,7 +325,8 @@ export class Card extends Component<ICardProps, ICardState> {
     front: {
       ...sharedStyleFlex,
       ...this._sharedStyleFrontBack,
-      transform: 'rotateY(0deg)'
+      transform: 'rotateY(0deg)',
+      zIndex: 2
     },
     back: {
       ...this._sharedStyleFrontBack,
