@@ -1,4 +1,5 @@
 /* Hiding the backface does not currently work properly w/ JSX styles, adding here for now */
 .backface {
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }  
