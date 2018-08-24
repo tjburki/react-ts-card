@@ -54,8 +54,8 @@ Cards can be used individually, or as part of a <a href="#deck">Deck</a>.
 `back?: any`: What appears on the back of the card, can be text or JSX/TSX  
 
 ##### Alignment
-*xAlignment type => 'left' | 'center' | 'right'*
-*yAlignment type => 'top' | 'center' | 'bottom'*
+*xAlignment type => 'left' | 'center' | 'right'*  
+*yAlignment type => 'top' | 'center' | 'bottom'*  
 `xAlignment?: xAlignment`: How everything on the card should be aligned horizontally (fall back), default 'left'  
 `yAlignment?: yAlignment`: How everything on the card should be aligned vertically (fall back), default 'top'                          
 `titleXAlignment?: xAlignment`: How the title should be aligned horizontally (overriden by side-specific), default 'left'  
@@ -94,8 +94,8 @@ A collection of <a href="#card">Cards</a>.  All properties of the Card component
 `cards: ICardProps[]`: List of cards we want to show in the Deck, ICardProps are the options available to Cards  
 
 ##### Alignment
-*xAlignment type => 'left' | 'center' | 'right'*
-*yAlignment type => 'top' | 'center' | 'bottom'*
+*xAlignment type => 'left' | 'center' | 'right'*  
+*yAlignment type => 'top' | 'center' | 'bottom'*  
 `deckXAlign?: xAlignment`: How to align the cards in the deck horizontally, default 'left'  
 `deckYAlign?: yAlignment`: How to align the cards in the deck vertically, default 'top'  
 
