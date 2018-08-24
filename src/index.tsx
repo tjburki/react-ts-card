@@ -306,6 +306,7 @@ export class Card extends Component<ICardProps, ICardState> {
       userSelect: 'none',
       width: '100%'
     },
+    //Card flip animation based off of solution from the following blog: https://davidwalsh.name/css-flip
     cardFlipped: {
       transform: 'rotateY(-180deg)'
     },
