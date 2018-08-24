@@ -102,7 +102,7 @@ Try out the card here: https://codesandbox.io/s/qr37pyqjj
 Known Issues
 ------------
 ### Browser Compatibility
-Everything will be great in a real browser (read: Chrome).  Some older versions of IE (< 11), for example, might have a little trouble.  Better compatibility to come!
+Everything will be great in a real browser (read: Chrome).  Some older versions of IE (< 11), for example, might have a little trouble.  Even Edge can be rough with the flip animation ::facepalm::, especially in the emulator used by the <a href="#example">Example</a>.    Better compatibility to come!
 
 ### Defined Height
 Due to the nature of the flipping mechanism, Cards must currently be assigned a static height.  Auto height Cards on the way!
