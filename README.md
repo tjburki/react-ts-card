@@ -3,7 +3,7 @@ React TS Card
 
 What is it?
 -----------
-### Practicle
+### Practical
 React TS Cards are responsive containers built with React & TypeScript that you can use to quickly segregate information in your UI.
  
 ### Responsive
