@@ -54,8 +54,10 @@ Cards can be used individually, or as part of a <a href="#deck">Deck</a>.
 `back?: any`: What appears on the back of the card, can be text or JSX/TSX  
 
 ##### Alignment
+*xAlignment type => 'left' | 'center' | 'right'*
+*yAlignment type => 'top' | 'center' | 'bottom'*
 `xAlignment?: xAlignment`: How everything on the card should be aligned horizontally (fall back), default 'left'  
-`yAlignment?: yAlignment`: How everything on the card should be aligned vertically (fall back), default 'top'                           
+`yAlignment?: yAlignment`: How everything on the card should be aligned vertically (fall back), default 'top'                          
 `titleXAlignment?: xAlignment`: How the title should be aligned horizontally (overriden by side-specific), default 'left'  
 `titleYAlignment?: yAlignment`: How the title should be aligned vertically (overriden by side-specific), default 'top'  
 `titleFrontXAlignment?: xAlignment`: How the front title should be aligned horizontally, default 'left'  
@@ -92,6 +94,8 @@ A collection of <a href="#card">Cards</a>.  All properties of the Card component
 `cards: ICardProps[]`: List of cards we want to show in the Deck, ICardProps are the options available to Cards  
 
 ##### Alignment
+*xAlignment type => 'left' | 'center' | 'right'*
+*yAlignment type => 'top' | 'center' | 'bottom'*
 `deckXAlign?: xAlignment`: How to align the cards in the deck horizontally, default 'left'  
 `deckYAlign?: yAlignment`: How to align the cards in the deck vertically, default 'top'  
 
@@ -102,10 +106,10 @@ Try out the card here: https://codesandbox.io/s/qr37pyqjj
 Known Issues
 ------------
 ### Sandbox on Mobile
-There was an issue with the backface-visibility in the sandbox on mobile which necessitated the inclusion of a separate CSS file.  If the issue cannot be fixed another way, it would be wise to move more of the TSX styles over to the CSS file for consistency.
+There was an issue with the backface-visibility in the sandbox on mobile which necessitated the inclusion of a separate CSS file.  The ability to revert back to a single .tsx file is dependent on the implementation of vendor-specific backface-visibility properties in React.CSSProperties.  If the vendor-specific properties are not added, it would be wise to move more of the TSX styles over to the CSS file for consistency.
 
 ### Browser Compatibility
-Everything will be great in a real browser (read: Chrome).  Some older versions of IE (< 11), for example, might have a little trouble.  Even Edge can be rough with the flip animation ::facepalm::, especially in the emulator used by the <a href="#example">Example</a>.    Better compatibility to come!
+Everything will be great in a real browser (read: Chrome).  Some older versions of IE (< 11), for example, might have a little trouble.  Even Edge can be rough with the flip animation ::facepalm::, especially in the emulator used by the <a href="#example">Example</a>.  Better compatibility to come!
 
 ### Defined Height
 Due to the nature of the flipping mechanism, Cards must currently be assigned a static height.  Auto height Cards on the way!
