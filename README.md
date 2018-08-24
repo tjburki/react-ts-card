@@ -18,7 +18,7 @@ Cards flip when clicked, revealing additonal content and improving your user exp
 Components
 ----------
 ### Card
-Cards can be used individually, or as part of a <a href="#Deck">Deck</a>.
+Cards can be used individually, or as part of a <a href="#deck">Deck</a>.
 
 #### Options
 
@@ -85,7 +85,7 @@ Cards can be used individually, or as part of a <a href="#Deck">Deck</a>.
 `onClick?: (e?: React.MouseEvent<HTMLElement>) => any`: Additional behavior that should occur when the card is clicked  
 
 ### Deck
-A collection of <a href="#Card">Cards</a>.  All properties of the Card component can be passed in here as a default for the Cards in the collection.
+A collection of <a href="#card">Cards</a>.  All properties of the Card component can be passed in here as a default for the Cards in the collection.
 
 #### Options
 ##### Content
