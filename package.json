@@ -1,17 +1,16 @@
 {
   "name": "react-ts-card",
-  "version": "0.7.1",
+  "version": "1.0.0",
   "private": false,
+  "types": "./index.d.ts",
   "dependencies": {
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-scripts-ts": "2.15.1"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "build": "rm -rf ./lib && tsc",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^9.6.6",
