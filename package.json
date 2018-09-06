@@ -1,6 +1,20 @@
 {
   "name": "react-ts-card",
-  "version": "1.0.0",
+  "version": "1.0.5",
+  "description": "Responsive, configurable, flippable content containers for React",
+  "author": "Tyler Burki <tylerjburki@gmail.com>",
+  "main": "./lib/react-ts-card.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjburki/react-ts-card.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "card",
+    "deck",
+    "flip"
+  ],
   "private": false,
   "types": "./index.d.ts",
   "dependencies": {
@@ -9,7 +23,7 @@
     "react-scripts-ts": "2.15.1"
   },
   "scripts": {
-    "build": "rm -rf ./lib && tsc",
+    "build": "rm -rf ./lib && tsc && (robocopy ./src ./lib /E *.css) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
     "prepare": "npm run build"
   },
   "devDependencies": {
