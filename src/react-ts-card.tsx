@@ -185,10 +185,12 @@ export class Card extends Component<ICardProps, ICardState> {
   /* Styles */
   _sharedStyleFrontBack: React.CSSProperties = {
     ...sharedStyleFlex,
+    backfaceVisibility: 'hidden',
     flexDirection: 'column',
     height: '100%',
     position: 'absolute',
-    width: '100%'
+    width: '100%',
+    WebkitBackfaceVisibility: 'hidden'
   }
 
   _style: ICardStyles = {
@@ -320,7 +322,7 @@ export class Card extends Component<ICardProps, ICardState> {
               }
             }
         >
-          <div className="backface" style={_style.front}>
+          <div style={_style.front}>
             { 
               titleFront || title
                 ? <div 
@@ -351,7 +353,7 @@ export class Card extends Component<ICardProps, ICardState> {
               {front}
             </div>
           </div>
-          <div className="backface" style={_style.back}>
+          <div style={_style.back}>
             { 
               titleBack || title
                 ? <div style=
