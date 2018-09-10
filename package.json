@@ -23,7 +23,7 @@
     "react-scripts-ts": "2.15.1"
   },
   "scripts": {
-    "build": "rm -rf ./lib && tsc && (robocopy ./src ./lib /E *.css) ^& IF %ERRORLEVEL% LEQ 1 exit 0",
+    "build": "rm -rf ./lib && tsc",
     "prepare": "npm run build"
   },
   "devDependencies": {
