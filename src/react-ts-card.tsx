@@ -5,9 +5,6 @@ import { Component } from "react";
 /* Types & Interfaces */
 import { xAlignment, yAlignment, IDeckProps, ICardProps, ICardState, IDeckStyles, ICardStyles } from "../index";
 
-/* Stylesheet */
-import './react-ts-card.css'; //Unfortunately need this for backface-visibilty compatibility on mobile
-
 /* Shared Constants */
 //Box-sizing-related shared styles
 const sharedStyleBoxSizing: React.CSSProperties = {
