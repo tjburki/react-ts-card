@@ -101,7 +101,7 @@ A collection of <a href="#card">Cards</a>.  All properties of the Card component
 
 Example
 --------
-Try out the card here: https://codesandbox.io/s/qr37pyqjj
+Try out the card here: https://codesandbox.io/s/2znyjrk8jr
 
 Known Issues
 ------------
