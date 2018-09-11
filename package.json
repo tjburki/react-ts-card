@@ -1,6 +1,6 @@
 {
   "name": "react-ts-card",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Responsive, configurable, flippable content containers for React",
   "author": "Tyler Burki <tylerjburki@gmail.com>",
   "main": "./lib/react-ts-card.js",
