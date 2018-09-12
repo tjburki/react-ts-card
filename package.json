@@ -4,6 +4,7 @@
   "description": "Responsive, configurable, flippable content containers for React",
   "author": "Tyler Burki <tylerjburki@gmail.com>",
   "main": "./lib/react-ts-card.js",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tjburki/react-ts-card.git"
